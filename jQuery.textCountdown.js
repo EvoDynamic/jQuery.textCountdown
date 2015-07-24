@@ -1,42 +1,39 @@
 (function ($) {
-	$.fn.textCountdown = function (options) {
-		var settings = $.extend({
-			// These are the defaults.
-			class: '',
-			characters: 10,
-			action: 'initialize'
-		}, options);
-
-		if (settings.action == 'initialize') {
-			return this.each(function () {
-				if (!$(this).next().length || !$(this).next().eq(0).hasClass('textCountdown')) {
-					var remaining = settings.characters - $(this).val().length;
-					$(this)
-					 .data('characters', settings.characters)
-					 .data('class', settings.class)
-					 .change(checkCharacters)
-					 .keyup(checkCharacters);
-					addResultSpan(this, remaining);
+	$.widget('evo.textCountdown',{
+		options: {
+			characters: 100,
+			remaining: null,
+			indicatorClass: '',
+			indicator: null,
+			indicatorWrapper: 'span',
+			indicatorText: 'Characters remaining'
+		},
+		_create: function(){						
+			this.options.indicator = $('<' + this.options.indicatorWrapper + '>');
+			if(this.options.indicatorClass!='')
+				this.options.indicator.addClass(this.options.indicatorClass);
+			this.element.after(this.options.indicator);
+			this.element.change(eval(this.check)).keyup(eval(this.check));
+			this.check();
+		},
+		addClass: function(v){
+			if(v===undefined){
+				return this.options.indicatorClass;
+			}
+			this.options.indicatorClass += ' ' + v;
+			this.options.indicator.addClass(v);			
+		},
+		check: function(){
+			var duh = this;
+			if(!duh.element) duh = $(this).data('evo-textCountdown');
+			if(duh.element){
+				duh.options.remaining = duh.options.characters - duh.element.val().length;
+				if(duh.options.remaining<0){
+					duh.element.val(duh.element.val().substring(0, duh.options.characters));
+					duh.options.remaining=0;
 				}
-			});
+				duh.options.indicator.html(duh.options.remaining + ' ' + duh.options.indicatorText);
+			}
 		}
-		return this;
-	};
-
-	function addResultSpan(elem, remaining) {
-		$(elem).after('<span class="textCountdownResult ' + $(elem).data('class') + '">' + remaining + ' Characters remaining</span>');
-	}
-
-	function checkCharacters(event) {
-		var elem = event.target;
-		var remaining = $(elem).data('characters') - $(elem).val().length;
-		if (remaining < 0) {
-			$(elem).val($(elem).val().substring(0, $(elem).data('characters')))
-			remaining = 0;
-		}
-		if ($(elem).nextAll('.textCountdownResult').length)
-			$(elem).nextAll('.textCountdownResult').text(remaining + ' Characters Remaining');
-		else
-			addResultSpan(elem, remaining);
-	}
+	});
 }(jQuery));

@@ -1,0 +1,82 @@
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script>
+		$.widget('evo.textCountdown',{
+			options: {
+				characters: 100,
+				remaining: null,
+				indicatorClass: '',
+				indicator: null,
+				indicatorWrapper: 'span'
+			},
+			_create: function(){						
+				this.options.indicator = $('<' + this.options.indicatorWrapper + '>');
+				if(this.options.indicatorClass!='')
+					this.options.indicator.addClass(this.options.indicatorClass);
+				this.element.after(this.options.indicator);
+				this.element.change(eval(this.check)).keyup(eval(this.check));
+				this.check();
+			},
+			addClass: function(v){
+				if(v===undefined){
+					return this.options.indicatorClass;
+				}
+				this.options.indicatorClass += ' ' + v;
+				this.options.indicator.addClass(v);			
+			},
+			check: function(){
+				var duh = this;
+				if(!duh.element) duh = $(this).data('evo-textCountdown');
+				if(duh.element){
+					duh.options.remaining = duh.options.characters - duh.element.val().length;
+					if(duh.options.remaining<0){
+						duh.element.val(duh.element.val().substring(0, duh.options.characters));
+						duh.options.remaining=0;
+					}
+					duh.options.indicator.html(duh.options.remaining + ' Characters remaining');
+				}
+			}
+		});
+	
+	    $(function(){
+	         //$('#taDefault').textCountdown();  
+			 //$('#ta5').textCountdown({characters:5, indicatorClass:'inputCounter'}); 
+			 //$('textarea').textCountdown({characters:4,indicatorClass:'inputCounter'});
+			 $('textarea').textCountdown({
+				characters : 4, 
+				indicatorClass : 'inputCounter', 
+				indicatorWrapper : 'div'
+			});
+	    })
+	</script>
+	<style>
+		.inputCounter{
+			font-size: 0.8em;
+			display:block;
+			text-align:right;
+			margin-bottom: 10px;
+		}
+		div.container {
+			width: 300px;
+			padding:5px;
+			background-color: #eee;
+			border 1px solid green;
+		}
+		div.container textarea{
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div>
+			<textarea id="taDefault"></textarea>
+		</div>
+		<div>
+			<textarea id="ta5"></textarea>
+		</div>
+	</div>
+</body>
+</html>
