@@ -1,3 +1,9 @@
+/* jQuery Text Countdown Plugin v0.1 - 2015-07-24
+* https://github.com/EvoDynamic/jQuery.textCountdown
+* Author: Brian Seim, EvoDynamic LLC
+* Sites:http://brianseim.com
+* 		http://evodynamic.com 
+* Copyright 2015 EvoDynamic LLC; Licensed MIT*/
 (function ($) {
 	$.widget('evo.textCountdown',{
 		options: {
@@ -34,6 +40,14 @@
 				}
 				duh.options.indicator.html(duh.options.remaining + ' ' + duh.options.indicatorText);
 			}
+		},
+		_setOption: function(key, value) {
+			this._super(key, value);
+			this.check();
+		},
+		_setOptions: function(options) {
+			this._super(options);
+			this.check();
 		}
 	});
 }(jQuery));
